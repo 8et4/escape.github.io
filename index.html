@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Android Kiosk Escape</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #1a1a2e;
+            color: #eee;
+            padding: 10px;
+            margin: 0;
+        }
+        h1 { color: #00d4ff; font-size: 1.5em; margin: 10px 0; }
+        h2 { color: #ff6b6b; font-size: 1.1em; margin: 15px 0 8px 0; border-bottom: 1px solid #444; padding-bottom: 5px; }
+        .btn {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            margin: 5px 0;
+            background: #4a4a6a;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            font-size: 14px;
+            cursor: pointer;
+            text-align: left;
+        }
+        .btn:hover { background: #5a5a8a; }
+        .btn:active { background: #6a6aaa; }
+        .success { background: #2d5a3d; }
+        .danger { background: #5a2d2d; }
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; }
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            margin: 5px 0;
+            background: #2a2a4a;
+            border: 1px solid #444;
+            color: #fff;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+        #log {
+            background: #0a0a1a;
+            padding: 10px;
+            margin-top: 10px;
+            border-radius: 5px;
+            font-family: monospace;
+            font-size: 12px;
+            max-height: 150px;
+            overflow-y: auto;
+        }
+        .section { margin-bottom: 15px; }
+    </style>
+</head>
+<body>
+    <h1>Android Kiosk Escape Tool</h1>
+
+    <div class="section">
+        <h2>Settings Access</h2>
+        <button class="btn success" onclick="go('intent:#Intent;action=android.settings.SETTINGS;end')">Open Settings</button>
+        <button class="btn success" onclick="go('intent:#Intent;action=android.settings.APPLICATION_DEVELOPMENT_SETTINGS;end')">Developer Options</button>
+        <button class="btn success" onclick="go('intent:#Intent;action=android.settings.APPLICATION_SETTINGS;end')">App Settings</button>
+        <button class="btn" onclick="go('intent:#Intent;action=android.settings.WIFI_SETTINGS;end')">WiFi Settings</button>
+        <button class="btn" onclick="go('intent:#Intent;action=android.settings.BLUETOOTH_SETTINGS;end')">Bluetooth Settings</button>
+        <button class="btn" onclick="go('intent:#Intent;action=android.settings.DISPLAY_SETTINGS;end')">Display Settings</button>
+        <button class="btn" onclick="go('intent:#Intent;action=android.settings.SECURITY_SETTINGS;end')">Security Settings</button>
+        <button class="btn" onclick="go('intent:#Intent;action=android.settings.ACCESSIBILITY_SETTINGS;end')">Accessibility</button>
+        <button class="btn" onclick="go('intent:#Intent;action=android.settings.DATE_SETTINGS;end')">Date/Time Settings</button>
+        <button class="btn" onclick="go('intent:#Intent;action=android.settings.DEVICE_INFO_SETTINGS;end')">About Device</button>
+    </div>
+
+    <div class="section">
+        <h2>ADB / USB Debug</h2>
+        <button class="btn success" onclick="go('intent:#Intent;action=android.settings.APPLICATION_DEVELOPMENT_SETTINGS;end')">Developer Options</button>
+        <button class="btn" onclick="go('intent:#Intent;action=com.android.settings.APPLICATION_DEVELOPMENT_SETTINGS;end')">Dev Options (Alt)</button>
+        <button class="btn" onclick="go('intent:#Intent;action=android.settings.USB_SETTINGS;end')">USB Settings</button>
+    </div>
+
+    <div class="section">
+        <h2>File Access</h2>
+        <div class="grid">
+            <button class="btn" onclick="go('file:///sdcard/')">file:///sdcard/</button>
+            <button class="btn" onclick="go('file:///storage/')">file:///storage/</button>
+            <button class="btn" onclick="go('file:///data/')">file:///data/</button>
+            <button class="btn" onclick="go('file:///system/')">file:///system/</button>
+            <button class="btn" onclick="go('file:///mnt/')">file:///mnt/</button>
+            <button class="btn" onclick="go('file:///etc/')">file:///etc/</button>
+        </div>
+        <button class="btn" onclick="go('content://com.android.externalstorage.documents/root/primary')">Content Provider Storage</button>
+        <button class="btn" onclick="go('content://media/external/file')">Media Provider</button>
+        <button class="btn" onclick="go('content://downloads/all_downloads')">Downloads</button>
+    </div>
+
+    <div class="section">
+        <h2>App Launchers</h2>
+        <button class="btn success" onclick="go('intent:#Intent;action=android.intent.action.MAIN;category=android.intent.category.HOME;end')">Home / Launcher</button>
+        <button class="btn" onclick="go('intent:#Intent;action=android.intent.action.MAIN;category=android.intent.category.APP_BROWSER;end')">Default Browser</button>
+        <button class="btn" onclick="go('intent:#Intent;action=android.intent.action.MAIN;category=android.intent.category.APP_EMAIL;end')">Email App</button>
+        <button class="btn" onclick="go('intent:#Intent;action=android.intent.action.MAIN;category=android.intent.category.APP_GALLERY;end')">Gallery</button>
+        <button class="btn" onclick="go('intent:#Intent;action=android.intent.action.MAIN;category=android.intent.category.APP_FILES;end')">File Manager</button>
+        <button class="btn" onclick="go('intent:#Intent;action=android.intent.action.VIEW;type=application/pdf;end')">PDF Viewer</button>
+        <button class="btn" onclick="go('intent:#Intent;component=com.android.settings/.Settings;end')">Settings (Component)</button>
+        <button class="btn" onclick="go('intent:#Intent;component=com.android.settings/.DevelopmentSettings;end')">Dev Settings (Component)</button>
+    </div>
+
+    <div class="section">
+        <h2>System Activities</h2>
+        <button class="btn" onclick="go('intent:#Intent;action=android.intent.action.MANAGE_APP_PERMISSIONS;end')">App Permissions</button>
+        <button class="btn" onclick="go('intent:#Intent;action=android.intent.action.MANAGE_APPLICATIONS_SETTINGS;end')">Manage Apps</button>
+        <button class="btn" onclick="go('intent:#Intent;action=android.intent.action.ALL_APPS;end')">All Apps</button>
+        <button class="btn" onclick="go('intent:#Intent;action=android.intent.action.PICK_ACTIVITY;end')">Activity Picker</button>
+        <button class="btn" onclick="go('intent:#Intent;action=android.intent.action.CHOOSER;end')">App Chooser</button>
+        <button class="btn" onclick="go('intent:#Intent;action=android.app.action.DEVICE_ADMIN_SETTINGS;end')">Device Admin</button>
+    </div>
+
+    <div class="section">
+        <h2>Browser Debug</h2>
+        <div class="grid">
+            <button class="btn" onclick="go('chrome://settings')">chrome://settings</button>
+            <button class="btn" onclick="go('chrome://flags')">chrome://flags</button>
+            <button class="btn" onclick="go('chrome://version')">chrome://version</button>
+            <button class="btn" onclick="go('chrome://inspect')">chrome://inspect</button>
+            <button class="btn" onclick="go('about:version')">about:version</button>
+            <button class="btn" onclick="go('about:flags')">about:flags</button>
+            <button class="btn" onclick="go('about:config')">about:config</button>
+            <button class="btn" onclick="go('about:blank')">about:blank</button>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>Dialer / Telephony</h2>
+        <button class="btn" onclick="go('tel:*#*#4636#*#*')">Testing Menu (*#*#4636#*#*)</button>
+        <button class="btn" onclick="go('tel:*#*#7378423#*#*')">Service Menu</button>
+        <button class="btn" onclick="go('tel:*#*#232338#*#*')">WiFi MAC Address</button>
+        <button class="btn" onclick="go('tel:*#*#8255#*#*')">GTalk Service Monitor</button>
+        <button class="btn" onclick="go('intent:#Intent;action=android.intent.action.DIAL;end')">Open Dialer</button>
+    </div>
+
+    <div class="section">
+        <h2>Download APK</h2>
+        <button class="btn danger" onclick="go('https://github.com/AaronKelley/ADBWifi/releases/download/v2.1/ADBWifi.apk')">ADB WiFi APK</button>
+        <button class="btn danger" onclick="go('https://github.com/nicknisi/termux-app/releases/download/v0.118.0/termux-app_v0.118.0+github-debug_universal.apk')">Termux Terminal APK</button>
+        <button class="btn danger" onclick="go('https://f-droid.org/repo/com.termux_118.apk')">Termux (F-Droid)</button>
+        <button class="btn danger" onclick="go('https://f-droid.org/repo/jackpal.androidterm_72.apk')">Terminal Emulator APK</button>
+    </div>
+
+    <div class="section">
+        <h2>Custom URL / Intent</h2>
+        <input type="text" id="customUrl" placeholder="Enter URL or intent://...">
+        <button class="btn" onclick="go(document.getElementById('customUrl').value)">Go to Custom URL</button>
+    </div>
+
+    <div class="section">
+        <h2>Shortcuts</h2>
+        <button class="btn" onclick="triggerBack()">Simulate BACK button</button>
+        <button class="btn" onclick="triggerHome()">Simulate HOME button</button>
+        <button class="btn" onclick="openNewWindow()">Open New Window</button>
+        <button class="btn" onclick="document.body.requestFullscreen()">Toggle Fullscreen</button>
+    </div>
+
+    <h2>Log</h2>
+    <div id="log">Ready...</div>
+
+    <script>
+        function log(msg) {
+            const logEl = document.getElementById('log');
+            const time = new Date().toLocaleTimeString();
+            logEl.innerHTML = `[${time}] ${msg}<br>` + logEl.innerHTML;
+        }
+
+        function go(url) {
+            log(`Trying: ${url}`);
+            try {
+                window.location.href = url;
+            } catch(e) {
+                log(`Error: ${e.message}`);
+                // Try alternative methods
+                try {
+                    window.open(url, '_self');
+                } catch(e2) {
+                    log(`Alt error: ${e2.message}`);
+                }
+            }
+        }
+
+        function triggerBack() {
+            log('Attempting back navigation');
+            history.back();
+        }
+
+        function triggerHome() {
+            log('Attempting home intent');
+            go('intent:#Intent;action=android.intent.action.MAIN;category=android.intent.category.HOME;end');
+        }
+
+        function openNewWindow() {
+            log('Opening new window');
+            window.open('about:blank', '_blank');
+        }
+
+        // Log page load
+        log('Page loaded. Device: ' + navigator.userAgent);
+    </script>
+</body>
+</html>
